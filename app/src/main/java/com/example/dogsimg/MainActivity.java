@@ -1,6 +1,9 @@
 package com.example.dogsimg;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -13,44 +16,27 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.Callable;
+
+import io.reactivex.rxjava3.core.Single;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String BASE_URL = "https://dog.ceo/api/breeds/image/random";
+
+    private static final String TAG = "MainActivity";
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        loadDogImage();
-    }
-
-    private void loadDogImage(){
-        new Thread(new Runnable() {
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        viewModel.loadDogImage();
+        viewModel.getDogImage().observe(this, new Observer<DogImage>() {
             @Override
-            public void run() {
-                try {
-                    URL url = new URL(BASE_URL);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    InputStream inputStream = connection.getInputStream();
-                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    String result;
-                    StringBuilder data = new StringBuilder();
-                    while ((result = bufferedReader.readLine()) != null){
-                        data.append(result);
-                    }
-
-                    JSONObject jsonObject = new JSONObject(data.toString());
-                    String message = jsonObject.getString("message");
-                    String status = jsonObject.getString("status");
-                    DogImage dogImage = new DogImage(message, status);
-
-                    Log.d("MainActivity", dogImage.toString());
-                } catch (Exception e) {
-                    Log.d("MainActivity", e.toString());
-                }
+            public void onChanged(DogImage dogImage) {
+                Log.d(TAG, dogImage.toString());
             }
-        }).start();
+        });
     }
 }

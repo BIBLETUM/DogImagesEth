@@ -32,6 +32,8 @@ android {
 }
 
 dependencies {
+    implementation ("io.reactivex.rxjava3:rxandroid:3.0.2")
+    implementation ("io.reactivex.rxjava3:rxjava:3.1.5")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
