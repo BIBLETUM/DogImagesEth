@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DogsImg</string>
+    <string name="next_image">Следующая картинка</string>
 </resources>

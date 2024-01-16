@@ -42,8 +42,8 @@ public class MainViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public void loadDogImage(){
-        Disposable disposable =  loadImageRx()
+    public void loadDogImage() {
+        Disposable disposable = loadImageRx()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<DogImage>() {
@@ -59,25 +59,26 @@ public class MainViewModel extends AndroidViewModel {
                 });
         disposables.add(disposable);
     }
-    private Single<DogImage> loadImageRx(){
+
+    private Single<DogImage> loadImageRx() {
         return Single.fromCallable(new Callable<DogImage>() {
             @Override
             public DogImage call() throws Exception {
-                    URL url = new URL(BASE_URL);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    InputStream inputStream = connection.getInputStream();
-                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    String result;
-                    StringBuilder data = new StringBuilder();
-                    while ((result = bufferedReader.readLine()) != null){
-                        data.append(result);
-                    }
+                URL url = new URL(BASE_URL);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = connection.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String result;
+                StringBuilder data = new StringBuilder();
+                while ((result = bufferedReader.readLine()) != null) {
+                    data.append(result);
+                }
 
-                    JSONObject jsonObject = new JSONObject(data.toString());
-                    String message = jsonObject.getString(KEY_MESSAGE);
-                    String status = jsonObject.getString(KEY_STATUS);
-                    return new DogImage(message, status);
+                JSONObject jsonObject = new JSONObject(data.toString());
+                String message = jsonObject.getString(KEY_MESSAGE);
+                String status = jsonObject.getString(KEY_STATUS);
+                return new DogImage(message, status);
             }
         });
     }
